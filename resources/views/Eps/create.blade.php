@@ -2,12 +2,9 @@
 
 @section('title', 'Crear EPS')
 
-
 @section('content_header')
     <h1>Crear Registro Nuevo</h1>
 @stop
-
-
 
 @section('content')
 
@@ -24,9 +21,8 @@
 
                     <div class="card-body">
 
-
                         <div class="form-group">
-                            <label for="numdoc">Numero Documento *</label>
+                            <label for="numdoc">Número Documento *</label>
                             <input type="number" class="form-control @error('numdoc') is-invalid @enderror" id="numdoc"
                                 name="numdoc" value="{{ old('numdoc') }}" required>
 
@@ -37,9 +33,8 @@
                             @enderror
                         </div>
 
-
                         <div class="form-group">
-                            <label for="denominacion">Denominacion *</label>
+                            <label for="denominacion">Denominación *</label>
                             <input type="text" class="form-control @error('denominacion') is-invalid @enderror"
                                 id="denominacion" name="denominacion" value="{{ old('denominacion') }}" required>
 
@@ -50,11 +45,10 @@
                             @enderror
                         </div>
 
-
                         <div class="form-group">
                             <label for="observaciones">Observaciones *</label>
-                            <input type="text" class="form-control @error('observaciones') is-invalid @enderror"
-                                id="observaciones" name="observaciones" value="{{ old('observaciones') }}" required>
+                            <textarea class="form-control @error('observaciones') is-invalid @enderror" id="observaciones" name="observaciones"
+                                rows="3" required>{{ old('observaciones') }}</textarea>
 
                             @error('observaciones')
                                 <span class="invalid-feedback">
@@ -63,16 +57,17 @@
                             @enderror
                         </div>
 
+                    </div>
 
-                        <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('eps.index') }}" class="btn btn-secondary">
-                                Cancelar
-                            </a>
+                    <div class="card-footer d-flex justify-content-between">
+                        <a href="{{ route('eps.index') }}" class="btn btn-secondary">
+                            Cancelar
+                        </a>
 
-                            <button type="submit" class="btn btn-primary">
-                                Guardar Ente Conformador
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar EPS
+                        </button>
+                    </div>
 
                 </form>
 
@@ -82,4 +77,5 @@
     </div>
 
 @stop
+
 @include('sweetalert::alert')

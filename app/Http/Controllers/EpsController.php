@@ -10,84 +10,104 @@ use RealRashid\SweetAlert\Facades\Alert;
 class EpsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar listado
      */
     public function index()
     {
-        $eps = Eps::paginate(10);
+        $eps = Eps::orderBy('nis')
+            ->paginate(10);
 
-        // DEBUG
         Log::info('Listado EPS cargado', [
             'total_registros' => $eps->total(),
         ]);
 
-        return view('Eps.index', compact('eps'));
+        return view('eps.index', compact('eps'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Crear
      */
     public function create()
     {
-        return view('Eps.create');
+        Log::info('Formulario create EPS abierto');
+
+        return view('eps.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar
      */
     public function store(Request $request)
     {
-        // Ver qué llega del formulario
-        Log::info('Datos recibidos STORE', $request->all());
+        Log::info('Datos recibidos STORE EPS', $request->all());
 
         $data = $request->validate([
             'numdoc' => 'required|integer|unique:tbl_eps,numdoc',
-            'denominacion' => 'required|string|max:100',
-            'observaciones' => 'required|string|max:200',
+            'denominacion' => 'required|string|max:255',
+            'observaciones' => 'required|string',
         ]);
 
-        Log::info('Datos validados STORE', $data);
+        Log::info('Datos validados STORE EPS', $data);
 
         $nuevo = Eps::create($data);
 
-        Log::info('Registro creado correctamente', [
+        Log::info('EPS creada correctamente', [
             'nis' => $nuevo->nis,
+            'numdoc' => $nuevo->numdoc,
             'denominacion' => $nuevo->denominacion,
-            'observaciones' => $nuevo->observaciones,
         ]);
 
-        Alert::success('¡Creado!', 'El Ente Conformador se ha registrado correctamente.');
+        Alert::success('¡Creado!', 'La EPS se ha registrado correctamente.');
 
         return redirect()->route('eps.index');
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar detalle
      */
-    public function show(Eps $eps)
+    public function show(Eps $ep)
     {
-        return view('Eps.show', compact('eps'));
-    }
-
-    public function edit(Eps $eps)
-    {
-        return view('Eps.edit', compact('eps'));
-    }
-
-    public function update(Request $request, Eps $eps)
-    {
-        Log::info('Datos recibidos UPDATE', $request->all());
-
-        $data = $request->validate([
-            'numdoc' => 'required|integer|unique:tbl_eps,NumDoc,'.$eps->NIS.',NIS',
-            'denominacion' => 'required|string|max:100',
-            'observaciones' => 'required|string|max:200',
+        Log::info('DEBUG COMPLETO - EPS', [
+            'nis' => $ep->nis,
+            'numdoc' => $ep->numdoc,
+            'denominacion' => $ep->denominacion,
+            'observaciones' => $ep->observaciones,
+            'created_at' => $ep->created_at,
+            'updated_at' => $ep->updated_at,
         ]);
 
-        $eps->update($data);
+        return view('eps.show', compact('ep'));
+    }
 
-        Log::info('Registro actualizado', [
-            'nis' => $eps->nis,
+    /**
+     * Editar
+     */
+    public function edit(Eps $ep)
+    {
+        Log::info('Editando EPS', [
+            'nis' => $ep->nis,
+        ]);
+
+        return view('eps.edit', compact('ep'));
+    }
+
+    /**
+     * Actualizar
+     */
+    public function update(Request $request, Eps $ep)
+    {
+        Log::info('Datos recibidos UPDATE EPS', $request->all());
+
+        $data = $request->validate([
+            'numdoc' => 'required|integer|unique:tbl_eps,numdoc,'.$ep->nis.',nis',
+            'denominacion' => 'required|string|max:255',
+            'observaciones' => 'required|string',
+        ]);
+
+        $ep->update($data);
+
+        Log::info('EPS actualizada', [
+            'nis' => $ep->nis,
         ]);
 
         Alert::info('¡Actualizado!', 'La EPS se ha modificado correctamente.');
@@ -95,14 +115,34 @@ class EpsController extends Controller
         return redirect()->route('eps.index');
     }
 
-    public function destroy(Eps $eps)
+    /**
+     * Eliminar
+     */
+    public function destroy(Eps $ep)
     {
-        Log::warning('Registro eliminado', [
-            'NIS' => $eps->NIS,
-            'Empresa' => $eps->denominacion,
+        // Verificar relaciones antes de eliminar
+        $tieneAprendices = $ep->aprendices()->count();
+        $tieneInstructores = $ep->instructores()->count();
+
+        if ($tieneAprendices > 0 || $tieneInstructores > 0) {
+            Log::warning('Intento de eliminar EPS con relaciones', [
+                'nis' => $ep->nis,  // Cambiado de $eps a $ep
+                'aprendices_relacionados' => $tieneAprendices,
+                'instructores_relacionados' => $tieneInstructores,
+            ]);
+
+            Alert::error('¡Error!', 'No se puede eliminar la EPS porque tiene aprendices o instructores asociados.');
+
+            return redirect()->route('eps.index');
+        }
+
+        Log::warning('EPS eliminada', [
+            'nis' => $ep->nis,
+            'numdoc' => $ep->numdoc,
+            'denominacion' => $ep->denominacion,
         ]);
 
-        $eps->delete();
+        $ep->delete();
 
         Alert::warning('¡Eliminado!', 'La EPS se ha eliminado correctamente.');
 
