@@ -337,6 +337,11 @@ return [
             'url' => 'enteconformador',
             'icon' => 'fas fa-sitemap',
         ],
+        [
+            'text' => 'EPS',
+            'url' => 'eps',
+            'icon' => 'fas fa-sitemap',
+        ],
 
         [
             'text' => 'Ficha de caracterización',

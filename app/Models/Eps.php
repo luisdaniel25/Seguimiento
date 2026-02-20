@@ -6,33 +6,37 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-
 
 class Eps extends Model
 {
-	protected $table = 'tbl_eps';
-	protected $primaryKey = 'nis';
+    protected $table = 'tbl_eps';
 
-	protected $casts = [
-		'numdoc' => 'int'
-	];
+    protected $primaryKey = 'nis';
 
-	protected $fillable = [
-		'numdoc',
-		'denominacion',
-		'observaciones'
-	];
+    public $incrementing = true;
 
-	public function aprendices()
-	{
-		return $this->hasMany(Aprendice::class, 'tbl_eps_nis');
-	}
+    protected $keyType = 'int';
 
-	public function instructores()
-	{
-		return $this->hasMany(Instructore::class, 'tbl_eps_nis');
-	}
+    public $timestamps = true;
+
+    protected $casts = [
+        'numdoc' => 'int',
+    ];
+
+    protected $fillable = [
+        'numdoc',
+        'denominacion',
+        'observaciones',
+    ];
+
+    public function aprendices()
+    {
+        return $this->hasMany(Aprendice::class, 'tbl_eps_nis');
+    }
+
+    public function instructores()
+    {
+        return $this->hasMany(Instructore::class, 'tbl_eps_nis');
+    }
 }

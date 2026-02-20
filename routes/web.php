@@ -1,11 +1,6 @@
 <?php
 
-
-
-
-
 use App\Http\Controllers\HomeController;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +9,9 @@ Auth::routes();
 // Ruta raíz
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard'); // Si está logeado → dashboard
+        return redirect()->route('dashboard');
     }
+
     return redirect()->route('login');
 });
 
