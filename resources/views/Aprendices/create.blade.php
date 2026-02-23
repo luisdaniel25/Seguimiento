@@ -16,7 +16,7 @@
                     <h3 class="card-title">Formulario de Registro</h3>
                 </div>
 
-                <form action="{{ route('aprendices.store') }}" method="POST">
+                <form action="{{ route('aprendices.store') }}" method="POST" class="form-guardar">
                     @csrf
 
                     <div class="card-body">
@@ -219,5 +219,33 @@
 
 @stop
 
-
 @include('sweetalert::alert')
+
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Confirmación para guardar
+            document.querySelectorAll('.form-guardar').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    if (!form.checkValidity()) return;
+
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: '¿Deseas guardar?',
+                        text: "Se registrará el nuevo aprendiz.",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, guardar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@stop

@@ -23,6 +23,8 @@ Route::get('/home', [HomeController::class, 'index'])
 // Rutas protegidas por auth
 Route::middleware(['auth'])->group(function () {
 
+
+
     // Módulo Aprendices
     Route::resource('aprendices', \App\Http\Controllers\AprendicesController::class);
 
@@ -36,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('eps', \App\Http\Controllers\EpsController::class);
 
     // Módulo Fichas de Caracterización
-    Route::resource('fichasdecaracterizacion', \App\Http\Controllers\FichasdecaracterizacionController::class);
+    Route::resource('Fichas', \App\Http\Controllers\FichasdecaracterizacionController::class);
 
     // Módulo Instructores
     Route::resource('instructores', \App\Http\Controllers\InstructoresController::class);
@@ -52,5 +54,4 @@ Route::middleware(['auth'])->group(function () {
 
     // Módulo Tipos de Documento
     Route::resource('tiposdocumento', \App\Http\Controllers\TiposdocumentoController::class);
-
 });

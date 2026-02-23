@@ -345,7 +345,7 @@ return [
 
         [
             'text' => 'Ficha de caracterización',
-            'url' => 'fichasdecaracterizacion',
+            'url' => 'Fichas',
             'icon' => 'fas fa-id-card',
         ],
 

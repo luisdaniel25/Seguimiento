@@ -41,22 +41,25 @@
                                 <td>{{ $regional->Observaciones ?? 'Sin observaciones' }}</td>
                                 <td>
 
-                                    <a href="{{ route('regionales.show', $regional) }}" class="btn btn-info btn-sm">
-                                        Ver
+                                    <a href="{{ route('regionales.show', $regional->NIS) }}" class="btn btn-sm btn-info"
+                                        title="Ver">
+                                        <i class="fas fa-eye"></i>
                                     </a>
 
-                                    <a href="{{ route('regionales.edit', $regional) }}" class="btn btn-warning btn-sm">
-                                        Editar
+
+                                    <a href="{{ route('regionales.edit', $regional->NIS) }}" class="btn btn-sm btn-warning"
+                                        title="Editar">
+                                        <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form action="{{ route('regionales.destroy', $regional) }}" method="POST"
-                                        class="d-inline">
+                                    <form action="{{ route('regionales.destroy', $regional->NIS) }}" method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
 
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Estás seguro de eliminar esta regional?')">
-                                            Eliminar
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('¿Está seguro de eliminar?')" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
 

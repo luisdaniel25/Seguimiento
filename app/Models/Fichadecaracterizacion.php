@@ -14,11 +14,15 @@ class Fichadecaracterizacion extends Model
 
     protected $primaryKey = 'NIS';
 
+    public $incrementing = true;
+
+    public  $timestamps = true;
+
     protected $casts = [
         'Codigo' => 'int',
         'Cupo' => 'int',
-        'FechaInicio' => 'datetime',
-        'FechaFin' => 'datetime',
+        'FechaInicio' => 'date',
+        'FechaFin' => 'date',
     ];
 
     protected $fillable = [

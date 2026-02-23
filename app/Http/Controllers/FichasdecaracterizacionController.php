@@ -2,64 +2,127 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\fichasdecaracterizacion;
+use App\Models\Fichadecaracterizacion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class FichasdecaracterizacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listado
      */
     public function index()
     {
-        //
+        $fichasdecaracterizacion = Fichadecaracterizacion::paginate(10);
+
+        Log::info('Listado Fichas de Caracterización cargado', [
+            'total_registros' => $fichasdecaracterizacion->total(),
+        ]);
+
+        return view('Fichas.index', compact('fichasdecaracterizacion'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Formulario crear
      */
     public function create()
     {
-        //
+        Log::info('Formulario create Ficha abierto');
+        return view('Fichas.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar nueva ficha
      */
     public function store(Request $request)
     {
-        //
+        Log::info('Datos recibidos STORE Ficha', $request->all());
+
+        $data = $request->validate([
+            'Codigo' => 'required|integer|unique:tbl_fichadecaracterizacion,Codigo',
+            'Denominacion' => 'required|string|max:255',
+            'Cupo' => 'required|integer|min:1',
+            'FechaInicio' => 'required|date',
+            'FechaFin' => 'required|date|after:FechaInicio',
+            'Observaciones' => 'nullable|string',
+        ]);
+
+        $ficha = Fichadecaracterizacion::create($data);
+
+        Log::info('Ficha creada correctamente', [
+            'NIS' => $ficha->NIS,
+            'Codigo' => $ficha->Codigo,
+        ]);
+
+        return redirect()
+            ->route('Fichas.index')
+            ->with('success', 'Ficha creada correctamente');
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar ficha
      */
-    public function show(fichasdecaracterizacion $fichasdecaracterizacion)
+    public function show(Fichadecaracterizacion $Ficha)
     {
-        //
+        return view('Fichas.show', [
+            'fichadecaracterizacion' => $Ficha
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Formulario editar
      */
-    public function edit(fichasdecaracterizacion $fichasdecaracterizacion)
+    public function edit(Fichadecaracterizacion $Ficha)
     {
-        //
+        Log::info('Abriendo edición para Ficha', [
+            'NIS' => $Ficha->NIS
+        ]);
+
+        return view('Fichas.edit', [
+            'fichadecaracterizacion' => $Ficha
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar ficha
      */
-    public function update(Request $request, fichasdecaracterizacion $fichasdecaracterizacion)
+    public function update(Request $request, Fichadecaracterizacion $Ficha)
     {
-        //
+        $data = $request->validate([
+            'Codigo' => 'required|integer|unique:tbl_fichadecaracterizacion,Codigo,' . $Ficha->NIS . ',NIS',
+            'Denominacion' => 'required|string|max:255',
+            'Cupo' => 'required|integer|min:1',
+            'FechaInicio' => 'required|date',
+            'FechaFin' => 'required|date|after_or_equal:FechaInicio',
+            'Observaciones' => 'nullable|string',
+        ]);
+
+        $Ficha->update($data);
+
+        Log::info('Ficha actualizada', [
+            'NIS' => $Ficha->NIS
+        ]);
+
+        return redirect()
+            ->route('Fichas.index')
+            ->with('success', 'Ficha actualizada correctamente');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar ficha
      */
-    public function destroy(fichasdecaracterizacion $fichasdecaracterizacion)
+    public function destroy(Fichadecaracterizacion $Ficha)
     {
-        //
+        $nisEliminado = $Ficha->NIS;
+
+        $Ficha->delete();
+
+        Log::warning('Ficha eliminada', [
+            'NIS' => $nisEliminado
+        ]);
+
+        return redirect()
+            ->route('Fichas.index')
+            ->with('success', 'Ficha eliminada correctamente');
     }
 }
