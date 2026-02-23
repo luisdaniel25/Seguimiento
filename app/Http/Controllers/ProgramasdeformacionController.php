@@ -2,64 +2,115 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\programasdeformacion;
+use App\Models\Fichadecaracterizacion;
+use App\Models\Programasdeformacion;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProgramasdeformacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listado
      */
     public function index()
     {
-        //
+        $programas = Programasdeformacion::with([
+            'fichadecaracterizacion',
+            'aprendices',
+        ])
+            ->orderBy('NIS')
+            ->paginate(10);
+
+        return view('programas.index', compact('programas'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Formulario creación
      */
     public function create()
     {
-        //
+        $fichas = Fichadecaracterizacion::all();
+
+        return view('programas.create', compact('fichas'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar registro
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'Codigo' => 'required|integer|unique:tbl_programasdeformacion,Codigo',
+            'Denominacion' => 'required|string|max:100',
+            'Observaciones' => 'nullable|string|max:500',
+            'tbl_fichadecaracterizacion_NIS' => 'required|integer|exists:tbl_fichadecaracterizacion,NIS',
+        ]);
+
+        Programasdeformacion::create($validated);
+
+        Alert::success('Muy Bien', 'Programa de formación creado exitosamente.');
+
+        return redirect()->route('programas.index');
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar detalle
      */
-    public function show(programasdeformacion $programasdeformacion)
+    public function show(Programasdeformacion $programa)
     {
-        //
+        $programa->load([
+            'fichadecaracterizacion',
+            'aprendices',
+        ]);
+
+        return view('programas.show', compact('programa'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Formulario edición
      */
-    public function edit(programasdeformacion $programasdeformacion)
+    public function edit(Programasdeformacion $programa)
     {
-        //
+        $fichas = Fichadecaracterizacion::all();
+
+        return view('programas.edit', compact('programa', 'fichas'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar registro
      */
-    public function update(Request $request, programasdeformacion $programasdeformacion)
+    public function update(Request $request, Programasdeformacion $programa)
     {
-        //
+        $validated = $request->validate([
+            'Codigo' => 'required|integer|unique:tbl_programasdeformacion,Codigo,'.$programa->NIS.',NIS',
+            'Denominacion' => 'required|string|max:100',
+            'Observaciones' => 'nullable|string|max:500',
+            'tbl_fichadecaracterizacion_NIS' => 'required|integer|exists:tbl_fichadecaracterizacion,NIS',
+        ]);
+
+        $programa->update($validated);
+
+        Alert::success('Muy Bien', 'Programa de formación actualizado exitosamente.');
+
+        return redirect()->route('programas.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar registro
      */
-    public function destroy(programasdeformacion $programasdeformacion)
+    public function destroy(Programasdeformacion $programa)
     {
-        //
+        // Verificar si tiene aprendices asociados
+        if ($programa->aprendices()->count() > 0) {
+            Alert::warning('No se puede eliminar', 'Este programa tiene aprendices asociados. Reasígnalos antes de eliminar.');
+
+            return redirect()->route('programas.index');
+        }
+
+        $programa->delete();
+
+        Alert::success('Muy Bien', 'Programa de formación eliminado exitosamente.');
+
+        return redirect()->route('programas.index');
     }
 }

@@ -23,8 +23,6 @@ Route::get('/home', [HomeController::class, 'index'])
 // Rutas protegidas por auth
 Route::middleware(['auth'])->group(function () {
 
-
-
     // Módulo Aprendices
     Route::resource('aprendices', \App\Http\Controllers\AprendicesController::class);
 
@@ -44,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('instructores', \App\Http\Controllers\InstructoresController::class);
 
     // Módulo Programas de Formación
-    Route::resource('programasdeformacion', \App\Http\Controllers\ProgramasdeformacionController::class);
+    Route::resource('programas', \App\Http\Controllers\ProgramasdeformacionController::class);
 
     // Módulo Regionales
     Route::resource('regionales', \App\Http\Controllers\RegionalesController::class);
