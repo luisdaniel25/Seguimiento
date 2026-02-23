@@ -375,8 +375,13 @@ return [
 
         [
             'text' => 'Tipos de Documentos',
-            'url' => 'tiposdocumentos',
+            'url' => 'tiposdocumento',
             'icon' => 'fas fa-file-alt',
+        ],
+        [
+            'text' => 'Usuarios',
+            'url' => 'usuarios',
+            'icon' => 'fas fa-users',
         ],
 
         ['header' => 'account_settings'],

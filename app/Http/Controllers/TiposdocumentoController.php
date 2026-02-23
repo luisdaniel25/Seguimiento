@@ -2,64 +2,106 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\tiposdocumento;
+use App\Models\Tiposdocumento;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Log;
 
 class TiposdocumentoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listar todos los tipos de documento
      */
     public function index()
     {
-        //
+        $tipos = Tiposdocumento::orderBy('nis')->paginate(10);
+        return view('Tiposdocumento.index', compact('tipos'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar formulario de creación
      */
     public function create()
     {
-        //
+        return view('Tiposdocumento.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar nuevo tipo de documento
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'denominacion' => 'required|string|max:255|unique:tbl_tiposdocumentos,denominacion',
+            'observaciones' => 'nullable|string',
+        ]);
+
+        try {
+            $tipo = Tiposdocumento::create($data);
+            Alert::success('¡Creado!', 'El tipo de documento se ha registrado correctamente.');
+            Log::info("Tipo de documento creado: NIS {$tipo->nis}, Denominación: {$tipo->denominacion}");
+        } catch (\Exception $e) {
+            Alert::error('Error', 'No se pudo crear el tipo de documento.');
+            Log::error("Error creando tipo de documento: " . $e->getMessage());
+        }
+
+        return redirect()->route('tiposdocumento.index');
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar detalle de un tipo de documento
      */
-    public function show(tiposdocumento $tiposdocumento)
+    public function show(Tiposdocumento $tiposdocumento)
     {
-        //
+        return view('Tiposdocumento.show', compact('tiposdocumento'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostrar formulario de edición
      */
-    public function edit(tiposdocumento $tiposdocumento)
+    public function edit(Tiposdocumento $tiposdocumento)
     {
-        //
+        return view('Tiposdocumento.edit', compact('tiposdocumento'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar tipo de documento
      */
-    public function update(Request $request, tiposdocumento $tiposdocumento)
+    public function update(Request $request, Tiposdocumento $tiposdocumento)
     {
-        //
+        $data = $request->validate([
+            'denominacion' => 'required|string|max:255|unique:tbl_tiposdocumentos,denominacion,' . $tiposdocumento->nis . ',nis',
+            'observaciones' => 'nullable|string',
+        ]);
+
+        try {
+            $tiposdocumento->update($data);
+            Alert::info('¡Actualizado!', 'El tipo de documento se ha modificado correctamente.');
+            Log::info("Tipo de documento actualizado: NIS {$tiposdocumento->nis}, Denominación: {$tiposdocumento->denominacion}");
+        } catch (\Exception $e) {
+            Alert::error('Error', 'No se pudo actualizar el tipo de documento.');
+            Log::error("Error actualizando tipo de documento NIS {$tiposdocumento->nis}: " . $e->getMessage());
+        }
+
+        return redirect()->route('tiposdocumento.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar tipo de documento
      */
-    public function destroy(tiposdocumento $tiposdocumento)
+    public function destroy(Tiposdocumento $tiposdocumento)
     {
-        //
+        try {
+            $nis = $tiposdocumento->nis;
+            $denom = $tiposdocumento->denominacion;
+            $tiposdocumento->delete();
+            Alert::warning('¡Eliminado!', 'El tipo de documento se ha eliminado correctamente.');
+            Log::warning("Tipo de documento eliminado: NIS {$nis}, Denominación: {$denom}");
+        } catch (\Exception $e) {
+            Alert::error('Error', 'No se pudo eliminar el tipo de documento.');
+            Log::error("Error eliminando tipo de documento NIS {$tiposdocumento->nis}: " . $e->getMessage());
+        }
+
+        return redirect()->route('tiposdocumento.index');
     }
 }

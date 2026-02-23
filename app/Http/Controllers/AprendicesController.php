@@ -13,7 +13,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class AprendicesController extends Controller
 {
     /**
-     * Mostrar listado de aprendices
+     * Listado
      */
     public function index()
     {
@@ -21,7 +21,7 @@ class AprendicesController extends Controller
             'centrodeformacion',
             'eps',
             'programasdeformacion',
-            'tiposdocumento',
+            'tiposdocumento'
         ])
             ->orderBy('NIS')
             ->paginate(10);
@@ -30,24 +30,29 @@ class AprendicesController extends Controller
     }
 
     /**
-     * Mostrar formulario de creación
+     * Formulario creación
      */
     public function create()
     {
-        $centros = Centrodeformacion::all();
-        $listaEps = Eps::all();
+        $centros   = Centrodeformacion::all();
+        $listaEps  = Eps::all();
         $programas = Programasdeformacion::all();
-        $tiposdoc = Tiposdocumento::all();
+        $tiposdoc  = Tiposdocumento::all();
 
-        return view('Aprendices.create', compact('centros', 'listaEps', 'programas', 'tiposdoc'));
+        return view('Aprendices.create', compact(
+            'centros',
+            'listaEps',
+            'programas',
+            'tiposdoc'
+        ));
     }
 
     /**
-     * Guardar nuevo aprendiz
+     * Guardar registro
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'NumDoc' => 'required|integer|unique:tbl_aprendices,NumDoc',
             'Nombres' => 'required|string|max:100',
             'Apellidos' => 'required|string|max:100',
@@ -63,15 +68,17 @@ class AprendicesController extends Controller
             'tbl_eps_nis' => 'required|integer|exists:tbl_eps,nis',
         ]);
 
-        Aprendice::create($data);
+        // Crear registro
+        Aprendice::create($validated);
 
-        Alert::success('¡Creado!', 'El aprendiz se ha registrado correctamente.');
+        // Alerta éxito (igual que Regional)
+        Alert::success('Muy Bien', 'Aprendiz creado exitosamente.');
 
         return redirect()->route('aprendices.index');
     }
 
     /**
-     * Mostrar detalle de un aprendiz
+     * Mostrar detalle
      */
     public function show(Aprendice $aprendice)
     {
@@ -79,32 +86,38 @@ class AprendicesController extends Controller
             'centrodeformacion',
             'eps',
             'programasdeformacion',
-            'tiposdocumento',
+            'tiposdocumento'
         ]);
 
         return view('Aprendices.show', compact('aprendice'));
     }
 
     /**
-     * Mostrar formulario de edición
+     * Formulario edición
      */
     public function edit(Aprendice $aprendice)
     {
-        $centros = Centrodeformacion::all();
-        $listaEps = Eps::all();
+        $centros   = Centrodeformacion::all();
+        $listaEps  = Eps::all();
         $programas = Programasdeformacion::all();
-        $tiposdoc = Tiposdocumento::all();
+        $tiposdoc  = Tiposdocumento::all();
 
-        return view('Aprendices.edit', compact('aprendice', 'centros', 'listaEps', 'programas', 'tiposdoc'));
+        return view('Aprendices.edit', compact(
+            'aprendice',
+            'centros',
+            'listaEps',
+            'programas',
+            'tiposdoc'
+        ));
     }
 
     /**
-     * Actualizar aprendiz
+     * Actualizar registro
      */
     public function update(Request $request, Aprendice $aprendice)
     {
-        $data = $request->validate([
-            'NumDoc' => 'required|integer|unique:tbl_aprendices,NumDoc,'.$aprendice->NIS.',NIS',
+        $validated = $request->validate([
+            'NumDoc' => 'required|integer|unique:tbl_aprendices,NumDoc,' . $aprendice->NIS . ',NIS',
             'Nombres' => 'required|string|max:100',
             'Apellidos' => 'required|string|max:100',
             'Direccion' => 'required|string|max:200',
@@ -119,21 +132,21 @@ class AprendicesController extends Controller
             'tbl_eps_nis' => 'required|integer|exists:tbl_eps,nis',
         ]);
 
-        $aprendice->update($data);
+        $aprendice->update($validated);
 
-        Alert::info('¡Actualizado!', 'El aprendiz se ha modificado correctamente.');
+        Alert::success('Muy Bien', 'Aprendiz actualizado exitosamente.');
 
         return redirect()->route('aprendices.index');
     }
 
     /**
-     * Eliminar aprendiz
+     * Eliminar registro
      */
     public function destroy(Aprendice $aprendice)
     {
         $aprendice->delete();
 
-        Alert::warning('¡Eliminado!', 'El aprendiz se ha eliminado correctamente.');
+        Alert::success('Muy Bien', 'Aprendiz eliminado exitosamente.');
 
         return redirect()->route('aprendices.index');
     }

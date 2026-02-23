@@ -50,8 +50,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('regionales', \App\Http\Controllers\RegionalesController::class);
 
     // Módulo Roles Administrativos
-    Route::resource('roles', \App\Http\Controllers\RolesadministrativosController::class);
+    Route::resource('rolesadministrativos', \App\Http\Controllers\RolesadministrativosController::class);
 
     // Módulo Tipos de Documento
     Route::resource('tiposdocumento', \App\Http\Controllers\TiposdocumentoController::class);
+
+    Route::resource('usuarios', \App\Http\Controllers\UserController::class);
 });
