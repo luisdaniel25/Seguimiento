@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchivoController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -54,4 +55,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tiposdocumento', \App\Http\Controllers\TiposdocumentoController::class);
 
     Route::resource('usuarios', \App\Http\Controllers\UserController::class);
+
+    
+    Route::resource('archivos', ArchivoController::class);
+
+    Route::get(
+        'archivos/{id}/download',
+        [ArchivoController::class, 'download']
+    )->name('archivos.download');
 });

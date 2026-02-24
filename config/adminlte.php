@@ -325,7 +325,11 @@ return [
             'url' => 'aprendices',
             'icon' => 'fas fa-user-graduate',
         ],
-
+        [
+            'text' => 'Archivos',
+            'url'  => 'archivos',
+            'icon' => 'fas fa-folder-open',
+        ],
         [
             'text' => 'Centro de Formación',
             'url' => 'centros',

@@ -1,5 +1,62 @@
+<?php $__env->startSection('title', 'Iniciar Sesión'); ?>
+
+
 <?php $__env->startSection('adminlte_css_pre'); ?>
     <link rel="stylesheet" href="<?php echo e(asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css')); ?>">
+
+    <style>
+        /* Fondo moderno */
+        body.login-page {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-size: cover;
+        }
+
+        /* Card Login */
+        .login-box .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
+        /* Header */
+        .login-logo a {
+            font-weight: bold;
+            font-size: 28px;
+            color: #2c5364;
+        }
+
+        /* Inputs */
+        .form-control {
+            border-radius: 8px;
+            height: 45px;
+        }
+
+        .input-group-text {
+            border-radius: 0 8px 8px 0;
+            background: #2c5364;
+            color: white;
+        }
+
+        /* Botón login */
+        .btn-login {
+            background: linear-gradient(45deg, #1d976c, #93f9b9);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer links */
+        .login-footer a {
+            color: #2c5364;
+            font-weight: 500;
+        }
+    </style>
 <?php $__env->stopSection(); ?>
 
 <?php
@@ -18,9 +75,19 @@
     }
 ?>
 
-<?php $__env->startSection('auth_header', __('adminlte::adminlte.login_message')); ?>
+
+<?php $__env->startSection('auth_header'); ?>
+    <h4 class="text-center font-weight-bold">
+        🔐 Bienvenido al Sistema
+    </h4>
+    <p class="text-center text-muted mb-4">
+        Inicia sesión para continuar
+    </p>
+<?php $__env->stopSection(); ?>
+
 
 <?php $__env->startSection('auth_body'); ?>
+
     <form action="<?php echo e($loginUrl); ?>" method="post">
         <?php echo csrf_field(); ?>
 
@@ -34,11 +101,11 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                value="<?php echo e(old('email')); ?>" placeholder="<?php echo e(__('adminlte::adminlte.email')); ?>" autofocus>
+                placeholder="Correo electrónico" value="<?php echo e(old('email')); ?>" autofocus>
 
             <div class="input-group-append">
                 <div class="input-group-text">
-                    <span class="fas fa-envelope <?php echo e(config('adminlte.classes_auth_icon', '')); ?>"></span>
+                    <span class="fas fa-envelope"></span>
                 </div>
             </div>
 
@@ -47,9 +114,7 @@ $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                <span class="invalid-feedback" role="alert">
-                    <strong><?php echo e($message); ?></strong>
-                </span>
+                <span class="invalid-feedback"><strong><?php echo e($message); ?></strong></span>
             <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -66,11 +131,11 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                placeholder="<?php echo e(__('adminlte::adminlte.password')); ?>">
+                placeholder="Contraseña">
 
             <div class="input-group-append">
                 <div class="input-group-text">
-                    <span class="fas fa-lock <?php echo e(config('adminlte.classes_auth_icon', '')); ?>"></span>
+                    <span class="fas fa-lock"></span>
                 </div>
             </div>
 
@@ -79,9 +144,7 @@ $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                <span class="invalid-feedback" role="alert">
-                    <strong><?php echo e($message); ?></strong>
-                </span>
+                <span class="invalid-feedback"><strong><?php echo e($message); ?></strong></span>
             <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -89,49 +152,47 @@ unset($__errorArgs, $__bag); ?>
         </div>
 
         
-        <div class="row">
-            <div class="col-7">
-                <div class="icheck-primary" title="<?php echo e(__('adminlte::adminlte.remember_me_hint')); ?>">
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="icheck-primary">
                     <input type="checkbox" name="remember" id="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
-
                     <label for="remember">
-                        <?php echo e(__('adminlte::adminlte.remember_me')); ?>
-
+                        Recordarme
                     </label>
                 </div>
             </div>
 
-            <div class="col-5">
-                <button type=submit class="btn btn-block <?php echo e(config('adminlte.classes_auth_btn', 'btn-flat btn-primary')); ?>">
-                    <span class="fas fa-sign-in-alt"></span>
-                    <?php echo e(__('adminlte::adminlte.sign_in')); ?>
-
+            <div class="col-6">
+                <button type="submit" class="btn btn-login btn-block">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar
                 </button>
             </div>
         </div>
+
     </form>
 <?php $__env->stopSection(); ?>
 
+
 <?php $__env->startSection('auth_footer'); ?>
-    
-    <?php if($passResetUrl): ?>
-        <p class="my-0">
-            <a href="<?php echo e($passResetUrl); ?>">
-                <?php echo e(__('adminlte::adminlte.i_forgot_my_password')); ?>
+    <div class="login-footer text-center">
 
-            </a>
-        </p>
-    <?php endif; ?>
+        <?php if($passResetUrl): ?>
+            <p class="mb-1">
+                <a href="<?php echo e($passResetUrl); ?>">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </p>
+        <?php endif; ?>
 
-    
-    <?php if($registerUrl): ?>
-        <p class="my-0">
-            <a href="<?php echo e($registerUrl); ?>">
-                <?php echo e(__('adminlte::adminlte.register_a_new_membership')); ?>
+        <?php if($registerUrl): ?>
+            <p class="mb-0">
+                <a href="<?php echo e($registerUrl); ?>">
+                    Crear nueva cuenta
+                </a>
+            </p>
+        <?php endif; ?>
 
-            </a>
-        </p>
-    <?php endif; ?>
+    </div>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('adminlte::auth.auth-page', ['authType' => 'login'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Seguimiento\vendor\jeroennoten\laravel-adminlte\src/../resources/views/auth/login.blade.php ENDPATH**/ ?>
